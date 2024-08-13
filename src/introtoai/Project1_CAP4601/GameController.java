@@ -22,8 +22,8 @@ public class GameController {
 	// Private instance variables
 	private char[][] board;
 	private Board mainBoard;
-	private int n;//size of the board
-	private int m;//the "m" in connect-m
+	private int n;	//size of the board
+	private int m;	//the "m" in connect-m
 	private int h;
 	private boolean userTurn;
 	//MIN_VALUE has bug where if you multiply it by -1 you still get MIN_VALUE
@@ -240,12 +240,14 @@ public class GameController {
 		 
 		 // Find the bestMove from the minimax function
 		 Move bestMove = minimax(AI_SYMBOL, mainBoard, depth, MIN, MAX);
-		 //Move bestMove = max(AI_SYMBOL, mainBoard, depth);
-		 
 		 // Play the best move
-	     mainBoard.play(bestMove.getColIndex(), AI_SYMBOL);
-	     
-		 System.out.println("Server played: " + bestMove.getColIndex());
+		 if (bestMove.getColIndex() >= 0 && bestMove.getColIndex() < n) {
+			// Play the best move
+			mainBoard.play(bestMove.getColIndex(), AI_SYMBOL);
+			System.out.println("Server played: " + bestMove.getColIndex());
+		} else {
+			System.out.println("AI tried to play an invalid move.");
+		}
 	     
 		 // Flip turn to the human
 		 userTurn = !userTurn;
@@ -387,14 +389,13 @@ public class GameController {
 		Board copyBoard;
 		int simUtility;
 
-		
 		// Check terminal states
 		if(depth == 0 || isGameOver()) {
 			return new Move(-1, utility(player, board));
 		}
 		
 		for(int i = 0; i < n; i++) {
-			if(!mainBoard.isColFull(i)) {
+			if(!mainBoard.isColFull(i) && i >= 0 && i < n) {
 				copyBoard = new Board(board);
 				copyBoard.play(i, player);
 				// Recursively go through minimax function
@@ -409,6 +410,11 @@ public class GameController {
 				}
 			}
 		}
+		
+		Random rand = new Random();
+		int randomPlay = rand.nextInt(n);
+		if(bestCol == -1)
+			return new Move(randomPlay, alpha);
 		// Return the best move
 		return new Move(bestCol, alpha);
 	}

@@ -114,7 +114,7 @@ public class Board {
 	*/ 
 	public boolean checkForWin(char player) {
 		
-		char symbol = player;//(player == USER) ? USER_SYMBOL : AI_SYMBOL;
+		char symbol = player;
 
 		// Check a horizontal win
 		for(int row = 0; row < size; row++) {
@@ -204,7 +204,10 @@ public class Board {
 	 *  @param col column for piece to be placed
 	 */
 	public boolean isValidMove(int player, int col) {
-		if(isColFull(col)) {
+		if(col < 0 || col > size){
+			return false;
+		}
+		else if(isColFull(col)) {
 			return false;
 		}else if (isBoardFull()) {
 			return false;
